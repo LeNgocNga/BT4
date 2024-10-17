@@ -1,6 +1,9 @@
 using BT4.Models;
+using BT4.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using X.PagedList;
 
 namespace BT4.Controllers
 {
@@ -14,10 +17,44 @@ namespace BT4.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            var lstsanpham = db.TDanhMucSps.ToList();
-            return View(lstsanpham);
+            int pageSize = 8;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var lstsanpham = db.TDanhMucSps.AsNoTracking().OrderBy(x=>x.TenSp);
+            PagedList<TDanhMucSp> lst = new PagedList<TDanhMucSp>(lstsanpham, pageNumber, pageSize);
+            return View(lst);
+        }
+
+        public IActionResult SanPhamTheoLoai(String maloai,int? page)
+        {
+            int pageSize = 8;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            var lstsanpham = db.TDanhMucSps.AsNoTracking().Where
+                (x => x.MaLoai == maloai).OrderBy(x => x.TenSp);
+            PagedList<TDanhMucSp> lst = new PagedList<TDanhMucSp>(lstsanpham, pageNumber, pageSize);
+            ViewBag.maloai = maloai;
+            return View(lst);
+        }
+
+        public IActionResult ChiTietSanPham(String maSp)
+        {
+            var sanPham = db.TDanhMucSps.SingleOrDefault(x => x.MaSp == maSp);
+            var anhSanPham = db.TAnhSps.Where(x => x.MaSp == maSp).ToList();
+            ViewBag.anhSanPham = anhSanPham;
+            return View(sanPham);
+        }
+
+        public IActionResult ProductDetail(String maSp)
+        {
+            var sanPham = db.TDanhMucSps.SingleOrDefault(x => x.MaSp == maSp);
+            var anhSanPham = db.TAnhSps.Where(x => x.MaSp == maSp).ToList();
+            var homeProductDetailViewModel = new HomeProductDetailViewModel
+            {
+                danhMucSp = sanPham,
+                anhSps = anhSanPham
+            };     
+            return View(homeProductDetailViewModel);
         }
 
         public IActionResult Privacy()
