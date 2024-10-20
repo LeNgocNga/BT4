@@ -81,5 +81,24 @@ namespace BT4.Areas.Admin.Controllers
             }
             return View(sanPham);
         }
+
+        [Route("XoaSanPham")]
+        [HttpGet]
+        public IActionResult XoaSanPham(String maSanPham)
+        {
+            TempData["Message"] = "";
+            var chiTietSanPham = db.TChiTietSanPhams.Where(x => x.MaSp == maSanPham).ToList();
+            if (chiTietSanPham.Count>0)
+            {
+                TempData["Message"] = "Không xóa được sản phẩm này";
+                return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+            }
+            var anhSanPham = db.TAnhSps.Where(x => x.MaSp == maSanPham);
+            if (anhSanPham.Any()) db.RemoveRange(anhSanPham);
+            db.Remove(db.TDanhMucSps.Find(maSanPham));
+            db.SaveChanges();
+            TempData["Message"] = "Sản phẩm đã được xóa";
+            return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+        }
     }
 }

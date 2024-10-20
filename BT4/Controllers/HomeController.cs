@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using X.PagedList;
-
+using BT4.Models.Authentication;
 namespace BT4.Controllers
 {
     public class HomeController : Controller
@@ -17,6 +17,7 @@ namespace BT4.Controllers
             _logger = logger;
         }
 
+        [Authentication]
         public IActionResult Index(int? page)
         {
             int pageSize = 8;
@@ -26,6 +27,7 @@ namespace BT4.Controllers
             return View(lst);
         }
 
+        [Authentication]
         public IActionResult SanPhamTheoLoai(String maloai,int? page)
         {
             int pageSize = 8;
@@ -37,6 +39,7 @@ namespace BT4.Controllers
             return View(lst);
         }
 
+        [Authentication]
         public IActionResult ChiTietSanPham(String maSp)
         {
             var sanPham = db.TDanhMucSps.SingleOrDefault(x => x.MaSp == maSp);
@@ -45,6 +48,7 @@ namespace BT4.Controllers
             return View(sanPham);
         }
 
+        [Authentication]
         public IActionResult ProductDetail(String maSp)
         {
             var sanPham = db.TDanhMucSps.SingleOrDefault(x => x.MaSp == maSp);
@@ -57,10 +61,13 @@ namespace BT4.Controllers
             return View(homeProductDetailViewModel);
         }
 
+        [Authentication]
         public IActionResult Privacy()
         {
             return View();
         }
+
+        [Authentication]
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
