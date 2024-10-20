@@ -23,12 +23,18 @@ namespace BT4.Controllers
         {
             if (HttpContext.Session.GetString("UserName") == null)
             {
-                var u = db.TUsers.Where(x => x.Username.Equals(user.Username) && x.Password.Equals(user.Password)).FirstOrDefault();
-                if (u!=null)
+                var u1 = db.TUsers.Where(x => x.Username.Equals(user.Username) && x.Password.Equals(user.Password) && x.LoaiUser == 0).FirstOrDefault();
+                if (u1!=null)
                 {
-                    HttpContext.Session.SetString("UserName", u.Username.ToString());
+                    HttpContext.Session.SetString("UserName", u1.Username.ToString());
                     return RedirectToAction("Index", "Home");
-                }    
+                }
+                var u2 = db.TUsers.Where(x => x.Username.Equals(user.Username) && x.Password.Equals(user.Password) && x.LoaiUser == 1).FirstOrDefault();
+                if (u2 != null)
+                {
+                    HttpContext.Session.SetString("UserName", u2.Username.ToString());
+                    return RedirectToAction("DanhMucSanPham","Admin");
+                }
             }
             return View();
         }
@@ -37,7 +43,7 @@ namespace BT4.Controllers
         {
             HttpContext.Session.Clear();
             HttpContext.Session.Remove("UserName");
-            return RedirectToAction("Login","Access ");
+            return RedirectToAction("Login","Access");
         }
     }
 }

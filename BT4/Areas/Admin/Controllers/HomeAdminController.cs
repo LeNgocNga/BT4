@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using X.PagedList;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using BT4.Models.Authentication;
 
 namespace BT4.Areas.Admin.Controllers
 {
@@ -15,11 +16,13 @@ namespace BT4.Areas.Admin.Controllers
         QlbanVaLiContext db = new QlbanVaLiContext();
         [Route("")]
         [Route("index")]
+        [Authentication]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authentication]
         [Route("danhmucsanpham")]
         public IActionResult DanhMucSanPham(int? page)
         {
@@ -30,6 +33,7 @@ namespace BT4.Areas.Admin.Controllers
             return View(lst);
         }
 
+        
         [Route("ThemSanPhamMoi")]
         [HttpGet]
         public IActionResult ThemSanPhamMoi()
@@ -41,6 +45,7 @@ namespace BT4.Areas.Admin.Controllers
             ViewBag.MaDt = new SelectList(db.TLoaiDts.ToList(), "MaDt", "TenLoai");
             return View();
         }
+        
         [Route("ThemSanPhamMoi")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -55,7 +60,7 @@ namespace BT4.Areas.Admin.Controllers
             return View(sanPham);
         }
 
-
+       
         [Route("SuaSanPham")]
         [HttpGet]
         public IActionResult SuaSanPham(string maSamPham)
@@ -68,6 +73,7 @@ namespace BT4.Areas.Admin.Controllers
             var sanPham = db.TDanhMucSps.Find(maSamPham);
             return View(sanPham);
         }
+       
         [Route("SuaSanPham")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,7 +87,7 @@ namespace BT4.Areas.Admin.Controllers
             }
             return View(sanPham);
         }
-
+        
         [Route("XoaSanPham")]
         [HttpGet]
         public IActionResult XoaSanPham(String maSanPham)
